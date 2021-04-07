@@ -30,7 +30,7 @@ public class IncomeService {
         String usernameFromToken = jwtProvider.getUsernameFromToken(token);
 
         Card byUserName = cardRepository.findingByUsername(usernameFromToken);
-        if (byUserName.getUserName() == null) return null;
+        if (byUserName.getUsername() == null) return null;
         List<Income> allByToCardId = incomeRepository.findAllByToCardId(byUserName.getId());
         return allByToCardId;
 

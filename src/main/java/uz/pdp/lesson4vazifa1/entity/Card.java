@@ -15,7 +15,7 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String userName;
+    private String username;
     private Double balance;
 //    private User user;
     @Column(unique = true)

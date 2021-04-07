@@ -28,7 +28,7 @@ public class CardService {
         card1.setActive(true);
         card1.setExpiredDate(card.getExpiredDate());
         card1.setNumber(card.getNumber());
-        card1.setUserName(card.getUserName());
+        card1.setUsername(card.getUsername());
         cardRepository.save(card1);
         return new ResultDto(true, "Successfully added");
     }
@@ -65,7 +65,7 @@ public class CardService {
         if (existsByNumberAndIdNot) return new ResultDto(false, "Karta mavjud");
 
         Card editedCard = optionalCard.get();
-        editedCard.setUserName(card.getUserName());
+        editedCard.setUsername(card.getUsername());
         editedCard.setNumber(card.getNumber());
         editedCard.setActive(true);
         editedCard.setBalance(card.getBalance());

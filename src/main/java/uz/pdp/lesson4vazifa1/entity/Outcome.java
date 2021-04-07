@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Data
@@ -19,8 +16,10 @@ public class Outcome {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer fromCardId;
-    private Integer toCardId;
+    @ManyToOne
+    private Card fromCardId;
+    @ManyToOne
+    private Card toCardId;
     private Double amount;
     private Date date;
     private Double commissionAmount;

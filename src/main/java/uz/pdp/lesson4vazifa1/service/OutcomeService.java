@@ -35,12 +35,12 @@ public class OutcomeService {
         //token bilan kirgan user kartasini topib oldik
         Card senderCard = cardRepository.findingByUsername(usernameFromToken);
         if (senderCard == null) return new ResultDto(false, "Karta mavjud emas");
-        //yuborayptgan karda mavjud yoki mavjud emasligini tekshirish
+        //yuborayptgan karta mavjud yoki mavjud emasligini tekshirish
         Optional<Card> optionalCardCard = cardRepository.findById(outcomeDto.getToCardId());
         if (!optionalCardCard.isPresent()) return new ResultDto(false, "Card not found");
         Card receiveCard = optionalCardCard.get();
         //kartada username bormi yoki yo'qligini tekshirish
-        String userName = receiveCard.getUserName();
+        String userName = receiveCard.getUsername();
         if (userName == null) return new ResultDto(false, "Karta username mavjud emas");
 
 
@@ -48,13 +48,14 @@ public class OutcomeService {
         Outcome outcome = new Outcome();
         outcome.setCommissionAmount(2.0);
         Double commissionAmount = outcome.getCommissionAmount();
-        double sendingMoney = outcomeDto.getAmount() / 100 * commissionAmount + outcomeDto.getAmount();
+        double sendingMoney = (outcomeDto.getAmount() / 100 * commissionAmount) + outcomeDto.getAmount();
         //karta balansi yetaidimi yuqmi tekshirish
         if (sendingMoney <= senderCard.getBalance()) {
             outcome.setAmount(outcomeDto.getAmount());
             outcome.setDate(new Date(System.currentTimeMillis()));
-            outcome.setFromCardId(senderCard.getId());
-            outcome.setToCardId(outcomeDto.getToCardId());
+            outcome.setFromCardId(senderCard);
+            outcome.setToCardId(receiveCard);
+            //cardni balansini kamaytirish
             senderCard.setBalance(senderCard.getBalance() - sendingMoney);
             receiveCard.setBalance(receiveCard.getBalance() + sendingMoney);
             Outcome savedOutcome = outcomeRepository.save(outcome);
@@ -65,8 +66,8 @@ public class OutcomeService {
             Income income = new Income();
             income.setAmount(savedOutcome.getAmount());
             income.setDate(new Date(System.currentTimeMillis()));
-            income.setToCardId(savedOutcome.getToCardId());
-            income.setFromCardId(savedOutcome.getFromCardId());
+            income.setReceivingCardId(receiveCard);
+            income.setSendingCardId(senderCard);
             incomeRepository.save(income);
 
             return new ResultDto(true, "Success");
