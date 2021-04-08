@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uz.pdp.lesson4vazifa1.entity.Card;
+import uz.pdp.lesson4vazifa1.payload.CardDto;
 import uz.pdp.lesson4vazifa1.payload.ResultDto;
 import uz.pdp.lesson4vazifa1.repository.CardRepository;
 import uz.pdp.lesson4vazifa1.security.JwtProvider;
@@ -20,15 +21,19 @@ public class CardService {
     @Autowired
     JwtProvider jwtProvider;
 
-    public ResultDto addCard(Card card) {
+    public ResultDto addCard(CardDto card, HttpServletRequest httpServletRequest) {
+        String tokenBearer = httpServletRequest.getHeader("Authorization");
+        String token = tokenBearer.substring(7);
+        String usernameFromToken = jwtProvider.getUsernameFromToken(token);
+
         boolean existsByNumber = cardRepository.existsByNumber(card.getNumber());
         if (existsByNumber) return new ResultDto(false, "Bunday karta mavjud");
         Card card1 = new Card();
+        card1.setUsername(usernameFromToken);
         card1.setBalance(card.getBalance());
         card1.setActive(true);
         card1.setExpiredDate(card.getExpiredDate());
         card1.setNumber(card.getNumber());
-        card1.setUsername(card.getUsername());
         cardRepository.save(card1);
         return new ResultDto(true, "Successfully added");
     }
@@ -58,16 +63,20 @@ public class CardService {
         }
     }
 
-    public ResultDto edit(Card card, Integer id) {
+    public ResultDto edit(CardDto card, Integer id,HttpServletRequest httpServletRequest) {
+        String tokenBearer = httpServletRequest.getHeader("Authorization");
+        String token = tokenBearer.substring(7);
+        String usernameFromToken = jwtProvider.getUsernameFromToken(token);
+
         Optional<Card> optionalCard = cardRepository.findById(id);
         if (!optionalCard.isPresent()) return new ResultDto(false, "Card not found");
         boolean existsByNumberAndIdNot = cardRepository.existsByNumberAndIdNot(card.getNumber(), id);
         if (existsByNumberAndIdNot) return new ResultDto(false, "Karta mavjud");
 
         Card editedCard = optionalCard.get();
-        editedCard.setUsername(card.getUsername());
         editedCard.setNumber(card.getNumber());
         editedCard.setActive(true);
+        editedCard.setUsername(usernameFromToken);
         editedCard.setBalance(card.getBalance());
         editedCard.setExpiredDate(card.getExpiredDate());
         cardRepository.save(editedCard);
