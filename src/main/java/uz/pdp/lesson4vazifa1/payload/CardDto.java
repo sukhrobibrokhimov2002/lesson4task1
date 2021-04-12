@@ -14,7 +14,6 @@ import java.sql.Date;
 public class CardDto {
 
     private Double balance;
-
     @NotNull(message = "Card number must not be null")
     private String number;
     @NotNull(message = "Card expired Date must not be null")

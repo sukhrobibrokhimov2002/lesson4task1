@@ -31,7 +31,7 @@ public class IncomeService {
 
         Card byUserName = cardRepository.findingByUsername(usernameFromToken);
         if (byUserName.getUsername() == null) return null;
-        List<Income> allByToCardId = incomeRepository.findAllByToCardId(byUserName.getId());
+        List<Income> allByToCardId = incomeRepository.findAllByReceivingCardId(byUserName);
         return allByToCardId;
 
     }

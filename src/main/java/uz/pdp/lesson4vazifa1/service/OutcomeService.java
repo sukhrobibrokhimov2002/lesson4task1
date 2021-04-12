@@ -86,7 +86,7 @@ public class OutcomeService {
         String usernameFromToken = jwtProvider.getUsernameFromToken(token);
         Card cardByUsername = cardRepository.findingByUsername(usernameFromToken);
         if (cardByUsername == null) return null;
-        List<Outcome> byFromCardId = outcomeRepository.findAllByFromCardId(cardByUsername.getId());
+        List<Outcome> byFromCardId = outcomeRepository.findAllByFromCardId(cardByUsername);
         if (byFromCardId != null) return byFromCardId;
         return null;
     }

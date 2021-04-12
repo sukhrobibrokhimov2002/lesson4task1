@@ -29,6 +29,7 @@ MyAuthService myAuthService;
         String token = httpServletRequest.getHeader("Authorization");
         if(token!=null && token.startsWith("Bearer")){
             token=token.substring(7);
+
             boolean validateToken = jwtProvider.validateToken(token);
             if(validateToken){
                 String usernameFromToken = jwtProvider.getUsernameFromToken(token);
